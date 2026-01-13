@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add to Cart - Ecommerce Demo</title>
+</head>
+
+<body>
+    <section>
+        <h1>Add Items to Cart</h1>
+        <div class="card">
+            <form th:action="@{/cart/add}" th:object="${cart}" method="post">
+                <div class="form-group">
+                    <label>Select User</label>
+                    <select name="userId" th:field="*{userId}" required>
+                        <option value="" disabled selected>-- Choose User --</option>
+                        <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Product</label>
+                    <select name="productId" th:field="*{productId}" required>
+                        <option value="" disabled selected>-- Choose Product --</option>
+                        <option th:each="p : ${products}" th:value="${p.id}"
+                            th:text="${p.name} + ' ($' + ${p.price} + ')'"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" th:field="*{quantity}" value="1" min="1" required>
+                </div>
+
+                <button type="submit" class="btn">Add to Cart</button>
+                <a th:href="@{/products}" class="btn btn-secondary">Back to Products</a>
+            </form>
+        </div>
+    </section>
+</body>
+
+</html>

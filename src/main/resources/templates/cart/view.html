@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Your Cart - Ecommerce Demo</title>
+</head>
+
+<body>
+    <section>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Shopping Carts</h1>
+            <form th:action="@{/cart}" method="get" id="userSwitchForm">
+                <label for="userSelect">View Cart For:</label>
+                <select name="userId" id="userSelect" onchange="document.getElementById('userSwitchForm').submit()"
+                    style="width: 150px; margin-left: 10px;">
+                    <option value="" th:selected="${selectedUserId == null}">-- Select User --</option>
+                    <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"
+                        th:selected="${u.id == selectedUserId}"></option>
+                </select>
+            </form>
+        </div>
+
+        <div th:if="${selectedUserId == null}" class="card" style="text-align: center; margin-top: 2rem;">
+            <p>Please select a user to view their cart.</p>
+        </div>
+
+        <div th:if="${selectedUserId != null and selectedUser != null}">
+            <h2 style="margin-top: 2rem;">
+                Cart for: <span th:text="${selectedUser.username}" style="color: var(--muted)">User</span>
+            </h2>
+
+            <div th:if="${#lists.isEmpty(cart.items)}" class="card" style="text-align: center;">
+                <p>This cart is empty.</p>
+                <a th:href="@{/products}" class="btn">Go Shop</a>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(cart.items)}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${cart.items}">
+                            <td th:text="${item.productName}">Product</td>
+                            <td th:text="'$' + ${item.price}">$0.00</td>
+                            <td th:text="${item.quantity}">1</td>
+                            <td th:text="'$' + ${item.price * item.quantity}">$0.00</td>
+                            <td>
+                                <a th:href="@{/cart/remove/{id}(id=${item.productId}, userId=${selectedUserId})}"
+                                    style="color: red;">Remove</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" style="text-align: right;">Total:</th>
+                            <th th:text="'$' + ${cart.total}">$0.00</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div style="display: flex; gap: 10px;">
+                    <a th:href="@{/cart/clear(userId=${selectedUserId})}" class="btn btn-secondary">Clear Cart</a>
+                    <button class="btn" onclick="alert('Checkout process starting...')">Checkout Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

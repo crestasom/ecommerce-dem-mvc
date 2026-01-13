@@ -1,0 +1,50 @@
+package org.example.ecommerce.controller;
+
+import org.example.ecommerce.model.User;
+import org.example.ecommerce.service.UserService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/users")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public String listUsers(Model model) {
+        model.addAttribute("users", userService.findAll());
+        return "users/list";
+    }
+
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("user", new User());
+        return "users/form";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("user", userService.findById(id));
+        return "users/form";
+    }
+
+    @PostMapping("/save")
+    public String saveUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+        userService.save(user);
+        redirectAttributes.addFlashAttribute("message", "User saved successfully!");
+        return "redirect:/users";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        userService.delete(id);
+        redirectAttributes.addFlashAttribute("message", "User deleted successfully!");
+        return "redirect:/users";
+    }
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Users - Ecommerce Demo</title>
+</head>
+
+<body>
+    <section>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>User Management</h1>
+            <a th:href="@{/users/add}" class="btn">Create User</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.username}">Username</td>
+                    <td th:text="${user.email}">Email</td>
+                    <td><span th:text="${user.role}"
+                            style="font-size: 0.8rem; padding: 2px 6px; background: #eee; border-radius: 4px;"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/users/edit/{id}(id=${user.id})}">Edit</a>
+                        <a th:href="@{/users/delete/{id}(id=${user.id})}"
+                            style="margin-left: 10px; color: red;">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>
