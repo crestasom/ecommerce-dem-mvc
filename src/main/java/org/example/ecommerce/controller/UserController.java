@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import org.springframework.validation.BindingResult;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @Controller
@@ -18,7 +20,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
-
 
     @GetMapping
     public String listUsers(Model model) {
@@ -39,7 +40,11 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "users/form";
+        }
         userService.save(user);
         redirectAttributes.addFlashAttribute("message", "User saved successfully!");
         return "redirect:/users";

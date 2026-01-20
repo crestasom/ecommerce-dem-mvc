@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Employee Registration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Register Employee</h1>
+
+    <div id="errorMessage" class="error"></div>
+
+    <form id="employeeForm">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contact">Contact:</label>
+            <input type="text" id="contact" name="contact" required>
+        </div>
+
+        <div class="form-group">
+            <label for="position">Position:</label>
+            <input type="text" id="position" name="position" required>
+        </div>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <script>
+        document.getElementById('employeeForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Clear previous errors
+            document.querySelectorAll('.error-msg').forEach(el => el.remove());
+            document.getElementById('errorMessage').textContent = '';
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                contact: document.getElementById('contact').value,
+                position: document.getElementById('position').value
+            };
+
+            fetch('/api/employees', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(async response => {
+                    if (response.ok) {
+                        window.location.href = '/employees/summary';
+                    } else if (response.status === 400) {
+                        const errors = await response.json();
+                        // Iterate over errors and display them
+                        for (const [field, message] of Object.entries(errors)) {
+                            const input = document.getElementById(field);
+                            if (input) {
+                                const errorDiv = document.createElement('div');
+                                errorDiv.className = 'error-msg';
+                                errorDiv.style.color = 'red';
+                                errorDiv.textContent = message;
+                                input.parentNode.appendChild(errorDiv);
+                            }
+                        }
+                    } else {
+                        const text = await response.text();
+                        throw new Error(text);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('errorMessage').textContent = 'Error: ' + error.message;
+                });
+        });
+    </script>
+
+</body>
+
+</html>
