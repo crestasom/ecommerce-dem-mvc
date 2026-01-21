@@ -1,12 +1,12 @@
 package org.example.ecommerce.repository.impl;
 
-import org.example.ecommerce.model.User;
-import org.example.ecommerce.repository.UserRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.example.ecommerce.model.User;
+import org.example.ecommerce.repository.UserRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -14,8 +14,8 @@ public class InMemoryUserRepository implements UserRepository {
     private final AtomicLong counter = new AtomicLong();
 
     public InMemoryUserRepository() {
-        save(new User(null, "admin", "admin@example.com", "ADMIN"));
-        save(new User(null, "user1", "user1@example.com", "USER"));
+        save(new User(null, "admin", "admin@example.com", "ADMIN", null, null));
+        save(new User(null, "user1", "user1@example.com", "USER", null, null));
     }
 
     @Override
@@ -39,6 +39,8 @@ public class InMemoryUserRepository implements UserRepository {
                 existing.setUsername(user.getUsername());
                 existing.setEmail(user.getEmail());
                 existing.setRole(user.getRole());
+                existing.setProfilePicture(user.getProfilePicture());
+                existing.setBirthDate(user.getBirthDate());
             }
         }
         return user;
@@ -48,4 +50,11 @@ public class InMemoryUserRepository implements UserRepository {
     public void delete(Long id) {
         users.removeIf(u -> u.getId().equals(id));
     }
+
+    @Override
+    public User findByEmail(String email) {
+        // TODO Auto-generated method stub
+        return users.stream().filter(u -> u.getEmail().equals(email)).findAny().orElse(null);
+    }
+
 }

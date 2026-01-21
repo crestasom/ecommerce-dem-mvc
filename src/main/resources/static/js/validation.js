@@ -73,6 +73,6 @@ function validateUserForm(button) {
     }
 
     console.log('Validation passed, submitting form...');
-   // form.submit();
+   	form.submit();
     
 }

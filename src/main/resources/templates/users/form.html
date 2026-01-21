@@ -9,7 +9,7 @@
     <section>
         <h1 th:text="${user.id == null ? 'Register New User' : 'Update User'}">User Form</h1>
         <div class="card">
-            <form th:action="@{/users/save}" th:object="${user}" method="post">
+            <form th:action="@{/users/save}" th:object="${user}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}">
                 <div class="form-group">
                     <label>Username</label>
@@ -29,6 +29,19 @@
                         <option value="USER">Standard User</option>
                         <option value="ADMIN">Administrator</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Birth Date</label>
+                    <input type="date" th:field="*{birthDate}" required>
+                    <div class="error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">Date Error
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <input type="file" name="file" accept="image/*">
+                    <div th:if="${user.profilePicture != null}">
+                        <small th:text="'Current: ' + ${user.profilePicture}"></small>
+                    </div>
                 </div>
                 <button type="button" class="btn" onclick="validateUserForm(this)">Register</button>
                 <a th:href="@{/users}" class="btn btn-secondary">Back to List</a>

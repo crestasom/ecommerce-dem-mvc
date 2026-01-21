@@ -1,7 +1,8 @@
 package org.example.ecommerce.repository;
 
-import org.example.ecommerce.model.User;
 import java.util.List;
+
+import org.example.ecommerce.model.User;
 
 public interface UserRepository {
     List<User> findAll();
@@ -11,4 +12,7 @@ public interface UserRepository {
     User save(User user);
 
     void delete(Long id);
+
+	User findByEmail(String email);
+
 }
