@@ -60,6 +60,11 @@
             <input type="text" id="position" name="position" required>
         </div>
 
+        <div class="form-group">
+            <label for="profileImage">Profile Picture:</label>
+            <input type="file" id="profileImage" accept="image/*">
+        </div>
+
         <button type="submit">Register</button>
     </form>
 
@@ -71,44 +76,60 @@
             document.querySelectorAll('.error-msg').forEach(el => el.remove());
             document.getElementById('errorMessage').textContent = '';
 
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                contact: document.getElementById('contact').value,
-                position: document.getElementById('position').value
+            const fileInput = document.getElementById('profileImage');
+            const file = fileInput.files[0];
+
+            const sendData = (base64String = null) => {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    contact: document.getElementById('contact').value,
+                    position: document.getElementById('position').value,
+                    profilePictureBase64: base64String
+                };
+
+                fetch('/api/employees', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                    .then(async response => {
+                        if (response.ok) {
+                            window.location.href = '/employees/summary';
+                        } else if (response.status === 400) {
+                            const errors = await response.json();
+                            // Iterate over errors and display them
+                            for (const [field, message] of Object.entries(errors)) {
+                                const input = document.getElementById(field);
+                                if (input) {
+                                    const errorDiv = document.createElement('div');
+                                    errorDiv.className = 'error-msg';
+                                    errorDiv.style.color = 'red';
+                                    errorDiv.textContent = message;
+                                    input.parentNode.appendChild(errorDiv);
+                                }
+                            }
+                        } else {
+                            const text = await response.text();
+                            throw new Error(text);
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('errorMessage').textContent = 'Error: ' + error.message;
+                    });
             };
 
-            fetch('/api/employees', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(async response => {
-                    if (response.ok) {
-                        window.location.href = '/employees/summary';
-                    } else if (response.status === 400) {
-                        const errors = await response.json();
-                        // Iterate over errors and display them
-                        for (const [field, message] of Object.entries(errors)) {
-                            const input = document.getElementById(field);
-                            if (input) {
-                                const errorDiv = document.createElement('div');
-                                errorDiv.className = 'error-msg';
-                                errorDiv.style.color = 'red';
-                                errorDiv.textContent = message;
-                                input.parentNode.appendChild(errorDiv);
-                            }
-                        }
-                    } else {
-                        const text = await response.text();
-                        throw new Error(text);
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('errorMessage').textContent = 'Error: ' + error.message;
-                });
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    sendData(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                sendData();
+            }
         });
     </script>
 

@@ -1,12 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Registration Successful</title>
     <meta charset="UTF-8">
 </head>
+
 <body>
     <h1>Registration Successful!</h1>
-    <p>The employee has been registered locally.</p>
+    <div id="details"
+        style="border: 1px solid #ccc; padding: 20px; border-radius: 8px; max-width: 400px; margin-bottom: 20px;">
+        <p><strong>Name:</strong> <span id="resName"></span></p>
+        <p><strong>Email:</strong> <span id="resEmail"></span></p>
+        <p><strong>Position:</strong> <span id="resPosition"></span></p>
+        <div id="imageContainer" style="margin-top: 15px;">
+            <strong>Profile Picture:</strong><br>
+            <img id="resImage" src="" alt="Profile Picture"
+                style="max-width: 200px; margin-top: 5px; border-radius: 4px; display: none;">
+            <p id="noImage" style="color: #999;">No image uploaded</p>
+        </div>
+    </div>
     <a href="/employees/register">Register Another</a>
+
+    <script>
+        // Use a simple trick to verify the last registered employee from the API
+        fetch('/api/employees')
+            .then(res => res.json())
+            .then(list => {
+                if (list.length > 0) {
+                    const emp = list[list.length - 1]; // Get last one
+                    document.getElementById('resName').textContent = emp.name;
+                    document.getElementById('resEmail').textContent = emp.email;
+                    document.getElementById('resPosition').textContent = emp.position;
+
+                    if (emp.profilePicture) {
+                        const img = document.getElementById('resImage');
+                        img.src = '/' + emp.profilePicture;
+                        img.style.display = 'block';
+                        document.getElementById('noImage').style.display = 'none';
+                    }
+                }
+            });
+    </script>
 </body>
+
 </html>

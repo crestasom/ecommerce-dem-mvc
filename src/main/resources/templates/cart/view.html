@@ -49,11 +49,19 @@
                         <tr th:each="item : ${cart.items}">
                             <td th:text="${item.productName}">Product</td>
                             <td th:text="'$' + ${item.price}">$0.00</td>
-                            <td th:text="${item.quantity}">1</td>
+                            <td>
+                                <form th:action="@{/cart/update}" method="post" style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="hidden" name="userId" th:value="${selectedUserId}">
+                                    <input type="hidden" name="productId" th:value="${item.productId}">
+                                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" 
+                                           style="width: 60px; padding: 5px;" onchange="this.form.submit()">
+                                    <button type="submit" class="btn btn-sm" style="padding: 2px 8px; font-size: 0.8rem;">Update</button>
+                                </form>
+                            </td>
                             <td th:text="'$' + ${item.price * item.quantity}">$0.00</td>
                             <td>
                                 <a th:href="@{/cart/remove/{id}(id=${item.productId}, userId=${selectedUserId})}"
-                                    style="color: red;">Remove</a>
+                                    style="color: var(--danger); font-weight: bold; text-decoration: none;">&times; Remove</a>
                             </td>
                         </tr>
                     </tbody>

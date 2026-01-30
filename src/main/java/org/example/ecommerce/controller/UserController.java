@@ -1,12 +1,7 @@
 package org.example.ecommerce.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-
 import org.example.ecommerce.model.User;
+import org.example.ecommerce.service.FileService;
 import org.example.ecommerce.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +23,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
-    private static final String UPLOAD_DIR = "uploads/";
+    private final FileService fileService;
 
     @GetMapping
     public String listUsers(Model model) {
@@ -57,20 +52,8 @@ public class UserController {
         }
 
         if (file != null && !file.isEmpty()) {
-            try {
-                Path uploadPath = Paths.get(UPLOAD_DIR);
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-				String fileName = file.getOriginalFilename() + "_" + System.currentTimeMillis();
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                user.setProfilePicture(filePath.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String relativePath = fileService.saveFile(file);
+            user.setProfilePicture(relativePath);
         }
 
         userService.save(user);

@@ -40,7 +40,10 @@
                     <label>Profile Picture</label>
                     <input type="file" name="file" accept="image/*">
                     <div th:if="${user.profilePicture != null}">
+                        <img th:src="@{'/' + ${user.profilePicture}}" alt="Profile Picture"
+                            style="max-width: 150px; display: block; margin-bottom: 5px; border-radius: 8px; border: 1px solid #ddd;">
                         <small th:text="'Current: ' + ${user.profilePicture}"></small>
+                        <input type="hidden" th:field="*{profilePicture}">
                     </div>
                 </div>
                 <button type="button" class="btn" onclick="validateUserForm(this)">Register</button>

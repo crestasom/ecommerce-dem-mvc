@@ -11,8 +11,7 @@ public class EmployeeDTO {
     private String name;
 
     @NotBlank(message = "Email is required")
-//	@Pattern(regexp = "")
-	@Email(message = "Invalid email format")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "Contact is required")
@@ -21,4 +20,7 @@ public class EmployeeDTO {
 
     @NotBlank(message = "Position is required")
     private String position;
+
+    private String profilePicture;
+    private String profilePictureBase64;
 }

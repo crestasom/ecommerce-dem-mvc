@@ -1,5 +1,6 @@
 package org.example.ecommerce.controller;
 
+import org.example.ecommerce.model.Cart;
 import org.example.ecommerce.model.Product;
 import org.example.ecommerce.model.dto.CartDto;
 import org.example.ecommerce.service.CartService;
@@ -37,7 +38,7 @@ public class CartController {
             model.addAttribute("selectedUser", userService.findById(userId));
         } else {
             // Provide an empty cart to avoid null pointers in template evaluation
-            model.addAttribute("cart", new org.example.ecommerce.model.Cart());
+            model.addAttribute("cart", new Cart());
         }
         return "cart/view";
     }
@@ -46,40 +47,40 @@ public class CartController {
     public String showAddForm(Model model) {
         model.addAttribute("users", userService.findAll());
         model.addAttribute("products", productService.findAll());
-		CartDto cartDto = new CartDto();
-		model.addAttribute("cart", cartDto);
+        CartDto cartDto = new CartDto();
+        model.addAttribute("cart", cartDto);
         return "cart/add";
     }
 
     @PostMapping("/add")
-	public String addToCart(@ModelAttribute(name = "cart") CartDto cartDto, RedirectAttributes redirectAttributes) {
-		Product product = productService.findById(cartDto.getProductId());
-		if (product != null && cartDto.getUserId() != null) {
-			cartService.addToCart(cartDto.getUserId(), product, cartDto.getQuantity());
-            redirectAttributes.addFlashAttribute("message", "Product added to cart!");
-			return "redirect:/cart?userId=" + cartDto.getUserId();
-        }
-        return "redirect:/cart/add";
+    public String addToCart(@ModelAttribute(name = "cart") CartDto cartDto, RedirectAttributes redirectAttributes) {
+        Product product = productService.findEntityById(cartDto.getProductId());
+        cartService.addToCart(cartDto.getUserId(), product, cartDto.getQuantity());
+        redirectAttributes.addFlashAttribute("message", "Product added to cart!");
+        return "redirect:/cart?userId=" + cartDto.getUserId();
+    }
+
+    @PostMapping("/update")
+    public String updateQuantity(@RequestParam Long userId, @RequestParam Long productId,
+            @RequestParam Integer quantity,
+            RedirectAttributes redirectAttributes) {
+        cartService.updateQuantity(userId, productId, quantity);
+        redirectAttributes.addFlashAttribute("message", "Cart updated!");
+        return "redirect:/cart?userId=" + userId;
     }
 
     @GetMapping("/remove/{productId}")
-    public String removeFromCart(@PathVariable Long productId, @RequestParam(required = false) Long userId,
+    public String removeFromCart(@PathVariable Long productId, @RequestParam Long userId,
             RedirectAttributes redirectAttributes) {
-        if (userId != null) {
-            cartService.removeFromCart(userId, productId);
-            redirectAttributes.addFlashAttribute("message", "Product removed from cart!");
-            return "redirect:/cart?userId=" + userId;
-        }
-        return "redirect:/cart";
+        cartService.removeFromCart(userId, productId);
+        redirectAttributes.addFlashAttribute("message", "Product removed from cart!");
+        return "redirect:/cart?userId=" + userId;
     }
 
     @GetMapping("/clear")
-    public String clearCart(@RequestParam(required = false) Long userId, RedirectAttributes redirectAttributes) {
-        if (userId != null) {
-            cartService.clearCart(userId);
-            redirectAttributes.addFlashAttribute("message", "Cart cleared!");
-            return "redirect:/cart?userId=" + userId;
-        }
-        return "redirect:/cart";
+    public String clearCart(@RequestParam Long userId, RedirectAttributes redirectAttributes) {
+        cartService.clearCart(userId);
+        redirectAttributes.addFlashAttribute("message", "Cart cleared!");
+        return "redirect:/cart?userId=" + userId;
     }
 }

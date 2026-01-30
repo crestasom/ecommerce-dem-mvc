@@ -3,6 +3,7 @@ package org.example.ecommerce.controller;
 import java.util.List;
 
 import org.example.ecommerce.model.Product;
+import org.example.ecommerce.model.dto.ProductDTO;
 import org.example.ecommerce.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,7 @@ public class ProductController {
 
 	@GetMapping
 	public String listProducts(Model model) {
-		List<Product> productList = productService.findAll();
+		List<ProductDTO> productList = productService.findAll();
 		model.addAttribute("products", productList);
 
 		return "products/list";
@@ -39,13 +40,13 @@ public class ProductController {
 
 	@GetMapping("/edit/{id}")
 	public String showEditForm(@PathVariable Long id, Model model) {
-		Product product = productService.findById(id);
+		ProductDTO product = productService.findById(id);
 		model.addAttribute("product", product);
 		return "products/form";
 	}
 
 	@PostMapping("/save")
-	public String saveProduct(@ModelAttribute Product product, RedirectAttributes redirectAttributes) {
+	public String saveProduct(@ModelAttribute ProductDTO product, RedirectAttributes redirectAttributes) {
 		productService.save(product);
 		redirectAttributes.addFlashAttribute("message", "Product saved successfully!");
 		return "redirect:/products";
