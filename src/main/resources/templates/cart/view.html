@@ -8,25 +8,19 @@
 <body>
     <section>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>Shopping Carts</h1>
-            <form th:action="@{/cart}" method="get" id="userSwitchForm">
-                <label for="userSelect">View Cart For:</label>
-                <select name="userId" id="userSelect" onchange="document.getElementById('userSwitchForm').submit()"
-                    style="width: 150px; margin-left: 10px;">
-                    <option value="" th:selected="${selectedUserId == null}">-- Select User --</option>
-                    <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"
-                        th:selected="${u.id == selectedUserId}"></option>
-                </select>
-            </form>
+            <h1>Your Shopping Cart</h1>
+            <div th:if="${selectedUser}" class="user-info">
+                Logged in as: <strong th:text="${selectedUser.username}">User</strong>
+            </div>
         </div>
 
-        <div th:if="${selectedUserId == null}" class="card" style="text-align: center; margin-top: 2rem;">
-            <p>Please select a user to view their cart.</p>
+        <div th:if="${selectedUser == null}" class="card" style="text-align: center; margin-top: 2rem;">
+            <p>Please <a th:href="@{/auth/login}">login</a> to view your cart.</p>
         </div>
 
-        <div th:if="${selectedUserId != null and selectedUser != null}">
-            <h2 style="margin-top: 2rem;">
-                Cart for: <span th:text="${selectedUser.username}" style="color: var(--muted)">User</span>
+        <div th:if="${selectedUser != null}">
+            <h2 style="margin-top: 1rem; color: var(--muted); font-size: 1.2rem;">
+                Items in your cart
             </h2>
 
             <div th:if="${#lists.isEmpty(cart.items)}" class="card" style="text-align: center;">
@@ -50,18 +44,20 @@
                             <td th:text="${item.productName}">Product</td>
                             <td th:text="'$' + ${item.price}">$0.00</td>
                             <td>
-                                <form th:action="@{/cart/update}" method="post" style="display: flex; align-items: center; gap: 5px;">
-                                    <input type="hidden" name="userId" th:value="${selectedUserId}">
+                                <form th:action="@{/cart/update}" method="post"
+                                    style="display: flex; align-items: center; gap: 5px;">
                                     <input type="hidden" name="productId" th:value="${item.productId}">
-                                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" 
-                                           style="width: 60px; padding: 5px;" onchange="this.form.submit()">
-                                    <button type="submit" class="btn btn-sm" style="padding: 2px 8px; font-size: 0.8rem;">Update</button>
+                                    <input type="number" name="quantity" th:value="${item.quantity}" min="1"
+                                        style="width: 60px; padding: 5px;" onchange="this.form.submit()">
+                                    <button type="submit" class="btn btn-sm"
+                                        style="padding: 2px 8px; font-size: 0.8rem;">Update</button>
                                 </form>
                             </td>
                             <td th:text="'$' + ${item.price * item.quantity}">$0.00</td>
                             <td>
-                                <a th:href="@{/cart/remove/{id}(id=${item.productId}, userId=${selectedUserId})}"
-                                    style="color: var(--danger); font-weight: bold; text-decoration: none;">&times; Remove</a>
+                                <a th:href="@{/cart/remove/{id}(id=${item.productId})}"
+                                    style="color: var(--danger); font-weight: bold; text-decoration: none;">&times;
+                                    Remove</a>
                             </td>
                         </tr>
                     </tbody>
@@ -74,7 +70,7 @@
                     </tfoot>
                 </table>
                 <div style="display: flex; gap: 10px;">
-                    <a th:href="@{/cart/clear(userId=${selectedUserId})}" class="btn btn-secondary">Clear Cart</a>
+                    <a th:href="@{/cart/clear}" class="btn btn-secondary">Clear Cart</a>
                     <button class="btn" onclick="alert('Checkout process starting...')">Checkout Now</button>
                 </div>
             </div>

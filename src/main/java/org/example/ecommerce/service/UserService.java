@@ -41,4 +41,9 @@ public class UserService {
 		User user = userRepository.findByEmail(email);
 		return user == null ? false : true;
 	}
+
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username)
+				.orElseThrow(() -> new ECommerceException("User not found: " + username));
+	}
 }

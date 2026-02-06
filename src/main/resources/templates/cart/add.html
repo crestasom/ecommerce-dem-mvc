@@ -10,12 +10,9 @@
         <h1>Add Items to Cart</h1>
         <div class="card">
             <form th:action="@{/cart/add}" th:object="${cart}" method="post">
-                <div class="form-group">
-                    <label>Select User</label>
-                    <select name="userId" th:field="*{userId}" required>
-                        <option value="" disabled selected>-- Choose User --</option>
-                        <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.username}"></option>
-                    </select>
+                <div class="form-group" sec:authorize="isAuthenticated()">
+                    <label>Logged in as: </label>
+                    <strong sec:authentication="name">User</strong>
                 </div>
 
                 <div class="form-group">

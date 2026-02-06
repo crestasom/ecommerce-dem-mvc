@@ -9,7 +9,7 @@
     <section>
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Available Products</h1>
-            <a th:href="@{/products/add}" class="btn">Add Product</a>
+            <a th:href="@{/products/add}" class="btn" sec:authorize="hasRole('ADMIN')">Add Product</a>
         </div>
         <table>
             <thead>
@@ -26,10 +26,13 @@
                         <small th:text="${product.description}" style="color: var(--muted)"></small>
                     </td>
                     <td th:text="'Rs.' + ${product.price}">Rs. 0.00</td>
-                    <td>
+                    <td sec:authorize="hasRole('ADMIN')">
                         <a th:href="@{/products/edit/{id}(id=${product.id})}">Edit</a>
                         <a th:href="@{/products/delete/{id}(id=${product.id})}"
                             style="margin-left: 10px; color: red;">Delete</a>
+                    </td>
+                    <td sec:authorize="!hasRole('ADMIN')">
+                        <span style="color: var(--muted)">View Only</span>
                     </td>
                 </tr>
             </tbody>

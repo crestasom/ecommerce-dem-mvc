@@ -1,5 +1,10 @@
 package org.example.ecommerce.model;
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,6 +38,10 @@ public class User {
 	// @UniqueUserEmail(message = "{user.email.unique.error}")
 	@Column(nullable = false, unique = true)
 	private String email;
+
+	@NotBlank(message = "Password is required")
+	@Column(nullable = false)
+	private String password;
 
 	@Column(length = 50)
 	private String role;
@@ -63,4 +72,60 @@ public class User {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+
 }
+//class UserDetailServiceImpl implements UserDetailsService{
+//
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	
+//}
+
+//class CustomAuthenticationProvider implements AuthenticationProvider {
+//
+//	@Override
+//	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+//		// TODO Auto-generated method stub
+//		return new UsernamePasswordAuthenticationToken(null, null);
+//	}
+//
+//	@Override
+//	public boolean supports(Class<?> authentication) {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
+//
+//}

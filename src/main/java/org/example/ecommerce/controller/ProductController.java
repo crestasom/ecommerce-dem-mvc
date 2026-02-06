@@ -1,5 +1,6 @@
 package org.example.ecommerce.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 import org.example.ecommerce.model.Product;
@@ -32,6 +33,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/add")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String showAddForm(Model model) {
 		Product product = new Product();
 		model.addAttribute("product", product);
@@ -39,6 +41,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/edit/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String showEditForm(@PathVariable Long id, Model model) {
 		ProductDTO product = productService.findById(id);
 		model.addAttribute("product", product);
@@ -46,6 +49,7 @@ public class ProductController {
 	}
 
 	@PostMapping("/save")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String saveProduct(@ModelAttribute ProductDTO product, RedirectAttributes redirectAttributes) {
 		productService.save(product);
 		redirectAttributes.addFlashAttribute("message", "Product saved successfully!");
@@ -53,6 +57,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 		productService.delete(id);
 		redirectAttributes.addFlashAttribute("message", "Product deleted successfully!");

@@ -15,8 +15,8 @@ public class InMemoryUserRepository implements UserRepository {
 	private final AtomicLong counter = new AtomicLong();
 
 	public InMemoryUserRepository() {
-		save(new User(null, "admin", "admin@example.com", "ADMIN", null, null, null));
-		save(new User(null, "user1", "user1@example.com", "USER", null, null, null));
+		save(new User(null, "admin", "admin@example.com", "password", "ROLE_ADMIN", null, null, null));
+		save(new User(null, "user1", "user1@example.com", "password", "ROLE_USER", null, null, null));
 	}
 
 	@Override
@@ -55,8 +55,12 @@ public class InMemoryUserRepository implements UserRepository {
 
 	@Override
 	public User findByEmail(String email) {
-		// TODO Auto-generated method stub
 		return users.stream().filter(u -> u.getEmail().equals(email)).findAny().orElse(null);
+	}
+
+	@Override
+	public Optional<User> findByUsername(String username) {
+		return users.stream().filter(u -> u.getUsername().equals(username)).findFirst();
 	}
 
 }
