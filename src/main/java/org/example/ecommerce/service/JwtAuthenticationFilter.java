@@ -30,11 +30,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
 			@NonNull FilterChain filterChain) throws ServletException, IOException {
 
-		final String jwt;
-		final String username;
-
-		// Extract JWT from Cookie
-		jwt = getJwtFromCookie(request);
+		// Extract JWT from Cookie or Authorization Header
+		String cookieJwt = getJwtFromCookie(request);
+		String authHeader = request.getHeader("Authorization");
+		String jwt, username;
+		if (cookieJwt != null) {
+			jwt = cookieJwt;
+		} else if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			jwt = authHeader.substring(7);
+		} else {
+			jwt = null;
+		}
 
 		if (jwt == null) {
 			filterChain.doFilter(request, response);
@@ -60,13 +66,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (request.getCookies() == null) {
 			return null;
 		}
-//		Cookie[] cookies=request.getCookies();
-//		for(Cookie cookie:cookies) {
-//			if(cookie.getName().equals("jwt")) {
-//				return cookie.getValue();
-//			}
-//		}
-//		return null;
+		// Cookie[] cookies=request.getCookies();
+		// for(Cookie cookie:cookies) {
+		// if(cookie.getName().equals("jwt")) {
+		// return cookie.getValue();
+		// }
+		// }
+		// return null;
 		return Arrays.stream(request.getCookies()).filter(cookie -> "jwt".equals(cookie.getName()))
 				.map(Cookie::getValue).findAny().orElse(null);
 	}
