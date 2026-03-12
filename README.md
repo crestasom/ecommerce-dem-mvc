@@ -1,1 +1,1 @@
-# ecommerce-dem-mvc
+# ecommerce-demo-mvc
