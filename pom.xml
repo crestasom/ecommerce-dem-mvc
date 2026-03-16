@@ -13,10 +13,15 @@
 
 	<groupId>org.example</groupId>
 	<artifactId>ecommerce-demo</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 
 	<properties>
 		<java.version>17</java.version>
+		<sonar.projectKey>springboot-demo</sonar.projectKey>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			target/site/jacoco/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>
@@ -189,6 +194,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
 					<excludes>
 						<exclude>**/dto/**</exclude>
 						<exclude>**/model/**</exclude>
@@ -196,6 +202,7 @@
 						<exclude>**/mapper/**</exclude>
 					</excludes>
 				</configuration>
+
 			</plugin>
 			<plugin>
 				<groupId>org.pitest</groupId>
