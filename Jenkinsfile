@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         REPO_URL = 'https://github.com/crestasom/ecommerce-dem-mvc'
-        APP_NAME = "ecommerce-demo-0.0.1-SNAPSHOT.jar"
+        APP_NAME = "ecommerce-demo-1.0-SNAPSHOT.jar"
         DEV_PATH = "D:\\deployment\\dev"
     }
 
