@@ -46,6 +46,7 @@ public class ProductService {
 	}
 
 	public void save(ProductDTO productDto) {
+
 		try {
 			Product product = toEntity(productDto);
 			// Product product =
@@ -69,6 +70,7 @@ public class ProductService {
 	}
 
 	public void delete(Long id) {
+		save(null);
 		if (id == null) {
 			throw new ECommerceException("Product ID must not be null");
 		}

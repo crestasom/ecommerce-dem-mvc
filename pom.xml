@@ -146,6 +146,23 @@
 			<version>2.1.0</version>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+
+		<!-- Where to upload RELEASE versions (1.0, 2.0, etc.) -->
+		<repository>
+			<id>nexus-releases</id>        <!-- Must match the <id> in settings.xml
+			<servers> -->
+			<url>http://localhost:8081/repository/maven-releases/</url>
+		</repository>
+
+		<!-- Where to upload SNAPSHOT versions (1.0-SNAPSHOT) -->
+		<snapshotRepository>
+			<id>nexus-snapshots</id>       <!-- Must match the <id> in settings.xml
+			<servers> -->
+			<url>http://localhost:8081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -200,6 +217,7 @@
 						<exclude>**/model/**</exclude>
 						<exclude>**/config/**</exclude>
 						<exclude>**/mapper/**</exclude>
+						<exclude>**/validator/**</exclude>
 					</excludes>
 				</configuration>
 

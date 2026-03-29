@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EcommerceApplication implements CommandLineRunner {
 	@Autowired
-	PasswordEncoder encoder;
+	private PasswordEncoder encoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(EcommerceApplication.class, args);
